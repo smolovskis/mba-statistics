@@ -1,4 +1,4 @@
-createTabs = tabItem(
+table = tabItem(
   tabName = "data",
   fluidRow( 
     tabBox(title = "Data", color = "blue", width = 10,

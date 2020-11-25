@@ -1,3 +1,6 @@
+library(shiny)
+library(semantic.dashboard)
+
 introduction <-  tabItem(
   "introduction",
   fluidPage(
