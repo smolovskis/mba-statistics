@@ -1,27 +1,31 @@
 source('tabs/introduction.R', local = TRUE)
-# source('tabs/tables.R', local = TRUE)
-# source('tabs/graphs.R', local = TRUE)
 source('tabs/temperature.R', local = TRUE)
 source('tabs/co2.R', local = TRUE)
+source('tabs/predictions.R', local = TRUE)
+source('tabs/conclusions.R', local = TRUE)
+source('tabs/about.R', local = TRUE)
 
 ui <- dashboardPage(
-  dashboardHeader(
-    color = "blue",title = "global warming", inverted = TRUE),
+  dashboardHeader(title = "Global warming", inverted = TRUE),
   dashboardSidebar(
     size = "thin", color = "teal",
     sidebarMenu(
-      menuItem(tabName = "introduction", "Introduction", icon = icon("table")),
-      # menuItem(tabName = "data", "Data", icon = icon("table")),
-      menuItem(tabName = "temperature", "Temperature", icon = icon("table")),
-      menuItem(tabName = "co2", "CO2", icon = icon("table"))
-      # menuItem(tabName = "graph", "Graph", icon = icon("table"))
+      menuItem(tabName = "introduction", "Introduction", icon = icon("comments")),
+      menuItem(tabName = "temperature", "Temperature", icon = icon("thermometer")),
+      menuItem(tabName = "co2", "CO2", icon = icon("industry")),
+      menuItem(tabName = "predictions", "Predictions", icon = icon("globe")),
+       menuItem(tabName = "conclusions", "Conclusions", icon = icon("sync")),
+      menuItem(tabName = "about", "About", icon = icon("users"))
     )
   ),
-  dashboardBody(
+  dashboardBody( color = "teal",
     tabItems(
       introduction,
       temperature,
-      co2
+      co2,
+      predictions,
+      conclusions,
+      about
     ),
   ), theme = "cerulean"
 )
