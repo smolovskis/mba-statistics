@@ -8,9 +8,9 @@ conclusions = tabItem( color = "teal",
     p(),
     tags$div(
       tags$ul(
-        tags$li(tags$span("Land and ocean temperatures increasing since 1880")),
-        tags$li(tags$span("CO"), tags$sub("2"), tags$span(" temperatures exponentialy")),
-        tags$li(tags$span("Linear relationship betwee CO"), tags$sub("2"), tags$span(" and temperature"))
+        text("Land and ocean temperatures increasing since 1880"),
+        text(HTML(paste0("CO",tags$sub("2")," level is increasing exponentialy"))),
+        text(HTML(paste0("Linear relationship betwee CO",tags$sub("2")," and temperature")))
       )
     )
   )

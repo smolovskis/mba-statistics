@@ -45,28 +45,29 @@ temperatureRegression <- function(temp) {
   oceanReg <- lm(Ocean~Year, temp)
   temp$LandResidual <- rstandard(landReg)
   temp$OceanResidual <- rstandard(oceanReg)
-  landRegResidual <- ggplot(temp, aes(x = Year, y = LandResidual)) +
+  landRegResidual <- ggplotly(ggplot(temp, aes(x = Year, y = LandResidual)) +
     geom_point(colour = primary) +
     geom_hline(yintercept=3, color = secondary) +
     geom_hline(yintercept=-3, color = secondary) +
-    theme_bw()
-  oceanRegResidual <- ggplot(temp, aes(x = Year, y = OceanResidual)) +
+    theme_bw())
+  oceanRegResidual <- ggplotly(ggplot(temp, aes(x = Year, y = OceanResidual)) +
     geom_point(colour = secondary) +
     geom_hline(yintercept=3, color = primary) +
     geom_hline(yintercept=-3, color = primary) +
-    theme_bw()
-  landRegResidualQq <- ggplot(temp, aes(sample = LandResidual)) +
+    theme_bw())
+  landRegResidualQq <- ggplotly(ggplot(temp, aes(sample = LandResidual)) +
     stat_qq(color = primary) +
-    theme_bw()
-  oceanRegResidualQq <- ggplot(temp, aes(sample = OceanResidual)) +
+    stat_qq_line(colour = secondary) +
+    theme_bw())
+  oceanRegResidualQq <- ggplotly(ggplot(temp, aes(sample = OceanResidual)) +
     stat_qq(color = secondary) +
     stat_qq_line(colour = primary) +
-    theme_bw()
-  subplot(list(withAnnotations(landRegResidual,"Standartized land residuals"),
-               withAnnotations(oceanRegResidual,"Standartized ocean residuals"),
+    theme_bw())
+  subplot(list(withAnnotations(landRegResidual,"Standartized land residuals, R-squared=0.37"),
+               withAnnotations(oceanRegResidual,"Standartized ocean residuals, R-squared=0.66"),
                withAnnotations(landRegResidualQq,"QQ plot of land temp residuals"),
                withAnnotations(oceanRegResidualQq,"QQ plot of ocean temp residuals")
-          ), nrows=2,  margin = 0.07
+          ), nrows=2, margin = 0.07
   )
 }
 
@@ -90,44 +91,41 @@ temperaturePredictions <- function(temperature) {
     geom_line(aes(x = oceanPrediction$Year, y = oceanPrediction$lwr), colour = primary, size = 1) +
     geom_line(aes(x = oceanPrediction$Year, y = oceanPrediction$fit), size = 1) +
     theme_bw()
-
-  temperatureAfter <- temperature[temperature$Year>= 1970,]
-  landRegAfter <- lm(Land~Year, temperatureAfter)
-  summary(landRegAfter)
-  oceanRegAfter <- lm(Ocean~Year, temperatureAfter)
-  summary(oceanRegAfter)
-  YearAfter <- seq(1970, 2050, by=1)
-  landPredictionAfter <- as.data.frame(predict(landRegAfter, newdata = data.frame(Year=YearAfter), interval = "confidence", level = 0.9))
-  landPredictionAfter <- cbind(YearAfter, landPredictionAfter)
-  landPredictionAfterPlot <- ggplot() +
-    geom_point(aes(x = temperatureAfter$Year, y = temperatureAfter$Land), colour = primary, shape=1) +
-    geom_line(aes(x = landPredictionAfter$Year, y = landPredictionAfter$upr), colour = secondary, size = 1) +
-    geom_line(aes(x = landPredictionAfter$Year, y = landPredictionAfter$lwr), colour = secondary, size = 1) +
-    geom_line(aes(x = landPredictionAfter$Year, y = landPredictionAfter$fit), size = 1) +
-    theme_bw()
-  oceanPredictionAfter <- as.data.frame(predict(oceanRegAfter, newdata = data.frame(Year=YearAfter), interval = "confidence", level = 0.9))
-  oceanPredictionAfter <- cbind(YearAfter, oceanPredictionAfter)
-  oceanPredictionAfterPlot <- ggplot() +
-    geom_point(aes(x = temperatureAfter$Year, y = temperatureAfter$Ocean), colour = secondary, shape=1) +
-    geom_line(aes(x = oceanPredictionAfter$Year, y = oceanPredictionAfter$upr), colour = primary, size = 1) +
-    geom_line(aes(x = oceanPredictionAfter$Year, y = oceanPredictionAfter$lwr), colour = primary, size = 1) +
-    geom_line(aes(x = oceanPredictionAfter$Year, y = oceanPredictionAfter$fit), size = 1) +
-    theme_bw()
-  subplot(list(withAnnotations(landPredictionPlot,"Land"),
-               withAnnotations(oceanPredictionPlot,"Ocean"),
-               withAnnotations(landPredictionAfterPlot,"Land after 1970"),
-               withAnnotations(oceanPredictionAfterPlot,"Ocean after 1970")
-  ), nrows=2
+  # temperatureAfter <- temperature[temperature$Year>= 1970,]
+  # landRegAfter <- lm(Land~Year, temperatureAfter)
+  # oceanRegAfter <- lm(Ocean~Year, temperatureAfter)
+  # YearAfter <- seq(1970, 2050, by=1)
+  # landPredictionAfter <- as.data.frame(predict(landRegAfter, newdata = data.frame(Year=YearAfter), interval = "confidence", level = 0.9))
+  # landPredictionAfter <- cbind(YearAfter, landPredictionAfter)
+  # landPredictionAfterPlot <- ggplot() +
+  #   geom_point(aes(x = temperatureAfter$Year, y = temperatureAfter$Land), colour = primary, shape=1) +
+  #   geom_line(aes(x = landPredictionAfter$Year, y = landPredictionAfter$upr), colour = secondary, size = 1) +
+  #   geom_line(aes(x = landPredictionAfter$Year, y = landPredictionAfter$lwr), colour = secondary, size = 1) +
+  #   geom_line(aes(x = landPredictionAfter$Year, y = landPredictionAfter$fit), size = 1) +
+  #   theme_bw()
+  # oceanPredictionAfter <- as.data.frame(predict(oceanRegAfter, newdata = data.frame(Year=YearAfter), interval = "confidence", level = 0.9))
+  # oceanPredictionAfter <- cbind(YearAfter, oceanPredictionAfter)
+  # oceanPredictionAfterPlot <- ggplot() +
+  #   geom_point(aes(x = temperatureAfter$Year, y = temperatureAfter$Ocean), colour = secondary, shape=1) +
+  #   geom_line(aes(x = oceanPredictionAfter$Year, y = oceanPredictionAfter$upr), colour = primary, size = 1) +
+  #   geom_line(aes(x = oceanPredictionAfter$Year, y = oceanPredictionAfter$lwr), colour = primary, size = 1) +
+  #   geom_line(aes(x = oceanPredictionAfter$Year, y = oceanPredictionAfter$fit), size = 1) +
+  #   theme_bw()
+  subplot(list(withAnnotations(ggplotly(landPredictionPlot),"Land"),
+               withAnnotations(ggplotly(oceanPredictionPlot),"Ocean")
+               # withAnnotations(ggplotly(landPredictionAfterPlot),"Land after 1970"),
+               # withAnnotations(ggplotly(oceanPredictionAfterPlot),"Ocean after 1970")
+  ), margin = 0.07
   )
 }
 
 co2Boxplot <- function(co2) {
-  co2Plot <- ggplot(co2, aes(x = Year, y = CO2, group = Year)) +
+  co2Plot <- ggplotly(ggplot(co2, aes(x = Year, y = CO2, group = Year)) +
     geom_boxplot(colour = secondary) +
-    theme_bw()
-  co2PlotAll <- ggplot(co2, aes(y = CO2)) +
+    theme_bw())
+  co2PlotAll <- ggplotly(ggplot(co2, aes(y = CO2)) +
     geom_boxplot(colour = primary) +
-    theme_bw()
+    theme_bw())
   subplot(list(withAnnotations(co2PlotAll, "Total"), withAnnotations(co2Plot,"Boxplot by year")), widths = c(0.2, 0.8))
 }
 
@@ -135,18 +133,18 @@ co2Regression <- function(co2) {
   co2reg <- lm(CO2~Year, co2)
   co2$Date <- ymd(paste0(co2$Year, " ", co2$Month, " ", "15"))
   co2$Residual <- rstandard(co2reg)
-  oceanRegResidual <- ggplot(co2, aes(x = Date, y = Residual)) +
+  oceanRegResidual <- ggplotly(ggplot(co2, aes(x = Date, y = Residual)) +
     geom_point(colour=primary) +
     geom_hline(yintercept=3, color = secondary) +
     geom_hline(yintercept=-3, color = secondary) +
     ylim(-4, 4) +
-    theme_bw()
-  oceanRegResidualQq <- ggplot(co2, aes(sample = Residual)) +
+    theme_bw())
+  oceanRegResidualQq <- ggplotly(ggplot(co2, aes(sample = Residual)) +
     stat_qq(colour=secondary) +
     stat_qq_line(colour=primary) +
     ylim(-4, 4) +
-    theme_bw()
-  subplot(list(withAnnotations(oceanRegResidual, "Standartized CO2 residuals"), withAnnotations(oceanRegResidualQq,"Boxplot by year")))
+    theme_bw())
+  subplot(list(withAnnotations(oceanRegResidual, "Residuals, R-squared=0.98"), withAnnotations(oceanRegResidualQq,"Boxplot by year")))
 }
 
 co2Predictions <- function(co2) {
@@ -160,7 +158,7 @@ co2Predictions <- function(co2) {
   ggplot() +
     geom_point(aes(x = co2$Year, y = co2$CO2), shape=1) +
     geom_line(aes(x = CO2LinearPred$Year, y = CO2LinearPred$fit, colour="y = ax + b"), size = 1) +
-    geom_line(aes(x = co2LogPred$Year, y = exp(co2LogPred$fit), colour="y = ab^x"), size = 1) +
+    # geom_line(aes(x = co2LogPred$Year, y = exp(co2LogPred$fit), colour="y = ab^x"), size = 1) +
     ggtitle("Co2 levels, linear vs simple exp fit") +
     xlab("Year") +
     ylab("Co2 levels") +
@@ -171,18 +169,18 @@ co2LogRegression <- function(co2) {
   coefC <- min(co2$CO2)*0.8
   co2logReg <- lm(log(CO2 - coefC)~Year, co2)
   co2$Residual <- rstandard(co2logReg)
-  co2LogResiduals <- ggplot(co2, aes(x = Year, y = Residual)) +
+  co2LogResiduals <- ggplotly(ggplot(co2, aes(x = Year, y = Residual)) +
     geom_point(colour=primary) +
     geom_hline(yintercept=3, color = secondary) +
     geom_hline(yintercept=-3, color = secondary) +
     ylim(-4, 4) +
-    theme_bw()
-  co2LogResidualQq <- ggplot(co2, aes(sample = Residual)) +
+    theme_bw())
+  co2LogResidualQq <- ggplotly(ggplot(co2, aes(sample = Residual)) +
     stat_qq(colour=secondary) +
     stat_qq_line(colour=primary) +
     ylim(-4, 4) +
-    theme_bw()
-  subplot(list(withAnnotations(co2LogResiduals, "Standartized CO2 exp fit residuals"), withAnnotations(co2LogResidualQq,"QQ plot of exp fit residuals")))
+    theme_bw())
+  subplot(list(withAnnotations(co2LogResiduals, "Exp fit residuals, R-squared=0.99"), withAnnotations(co2LogResidualQq,"QQ plot of exp fit residuals")))
 }
 
 co2LogPredictions <- function(co2) {
@@ -220,24 +218,22 @@ tempToCo2Regression <- function(temperature, co2) {
     theme_bw()
   oceanTempCo2Residual <- ggplot(co2AndTemperature, aes(x = CO2, y = LandResidual)) +
     geom_point(colour=primary) +
-    ggtitle("Standartized land temp vs CO2  residuals") +
     geom_hline(yintercept=3, color = secondary) +
     geom_hline(yintercept=-3, color = secondary) +
     ylim(-4, 4) +
     theme_bw()
 
-    landTempCo2Residual <- ggplot(co2AndTemperature, aes(x = CO2, y = OceanResidual)) +
+  landTempCo2Residual <- ggplot(co2AndTemperature, aes(x = CO2, y = OceanResidual)) +
     geom_point(color = secondary) +
-    ggtitle("Standartized ocean temp vs CO2 residuals") +
     geom_hline(yintercept=3, color = primary) +
     geom_hline(yintercept=-3, color = primary) +
     ylim(-4, 4) +
     theme_bw()
-  subplot(list(withAnnotations(landPlot,"Land temperature vs CO2"),
-               withAnnotations(oceanPlot,"Ocean temperature vs CO2"),
-               withAnnotations(oceanTempCo2Residual,"Standartized land temp vs CO2  residuals"),
-               withAnnotations(landTempCo2Residual,"Standartized ocean temp vs CO2 residuals")
-  ), nrows=2
+  subplot(list(withAnnotations(ggplotly(landPlot),"Land temperature vs CO2"),
+               withAnnotations(ggplotly(oceanPlot),"Ocean temperature vs CO2"),
+               withAnnotations(ggplotly(oceanTempCo2Residual),"Land residuals, R-squared=0.50"),
+               withAnnotations(ggplotly(landTempCo2Residual),"Ocean residuals, R-squared=0.73")
+  ), nrows=2, margin = 0.07
   )
 }
 
